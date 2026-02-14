@@ -104,17 +104,27 @@
 
         .carousel-container {
             width: 100%;
+            max-width: 800px;
             margin: 0 auto 40px;
-            overflow: hidden;
+            position: relative;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             background: white;
             padding: 20px;
         }
 
+        .carousel-wrapper {
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
         .carousel-slide {
             display: flex;
             width: 500%; /* 5 images * 100% */
+            transition: margin-left 0.5s ease-in-out;
+        }
+
+        .carousel-slide.auto-slide {
             animation: slide 15s infinite;
         }
 
@@ -122,7 +132,6 @@
             width: 20%; /* 100% / 5 images */
             height: auto;
             object-fit: cover;
-            border-radius: 10px;
         }
 
         @keyframes slide {
@@ -139,31 +148,99 @@
             100% { margin-left: 0; }
         }
 
-        .video-section {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 40px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 40px;
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 23, 68, 0.8);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .video-section h2 {
-            color: #ff1744;
-            margin-bottom: 25px;
-            font-size: 2em;
+        .carousel-button:hover {
+            background: rgba(255, 23, 68, 1);
+            transform: translateY(-50%) scale(1.1);
         }
 
-        .video-container {
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-radius: 15px;
-            overflow: hidden;
+        .carousel-button:active {
+            transform: translateY(-50%) scale(0.95);
         }
 
-        video {
-            width: 100%;
-            display: block;
+        .carousel-button.prev {
+            left: 10px;
+        }
+
+        .carousel-button.next {
+            right: 10px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .welcome-section {
+                padding: 40px 20px;
+                margin: 10px;
+            }
+
+            .welcome-section h1 {
+                font-size: 2em;
+            }
+
+            .welcome-button {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+
+            .content-section {
+                width: 95%;
+            }
+
+            .carousel-container {
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+
+            .carousel-button {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .carousel-button.prev {
+                left: 5px;
+            }
+
+            .carousel-button.next {
+                right: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-section h1 {
+                font-size: 1.5em;
+            }
+
+            .welcome-button {
+                padding: 12px 25px;
+                font-size: 14px;
+                letter-spacing: 1px;
+            }
+
+            .carousel-button {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -176,27 +253,26 @@
 
     <div class="content-section" id="contentSection">
         <div class="carousel-container">
-            <div class="carousel-slide">
-                <img src="img1.jpg" alt="Couple on the beach">
-                <img src="img2.jpg" alt="Couple on a bridge">
-                <img src="img3.jpg" alt="Couple selfie">
-                <img src="img4.jpg" alt="Couple in a cave">
-                <img src="img5.jpg" alt="Couple smiling">
-            </div>
-        </div>
-
-        <div class="video-section">
-            <h2>Our Special Moments 💖</h2>
-            <div class="video-container">
-                <video controls autoplay muted playsinline loop aria-label="Valentine's Day special moments video compilation">
-                    <source src="valentine.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+            <button class="carousel-button prev" onclick="changeSlide(-1)" aria-label="Previous image">&#10094;</button>
+            <button class="carousel-button next" onclick="changeSlide(1)" aria-label="Next image">&#10095;</button>
+            <div class="carousel-wrapper">
+                <div class="carousel-slide auto-slide" id="carouselSlide">
+                    <img src="img1.jpg" alt="Couple on the beach">
+                    <img src="img2.jpg" alt="Couple on a bridge">
+                    <img src="img3.jpg" alt="Couple selfie">
+                    <img src="img4.jpg" alt="Couple in a cave">
+                    <img src="img5.jpg" alt="Couple smiling">
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+        let autoSlideEnabled = true;
+        let slideTimeout = null;
+
         function showContent() {
             const contentSection = document.getElementById('contentSection');
             contentSection.classList.add('show');
@@ -206,6 +282,37 @@
             setTimeout(() => {
                 contentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, SCROLL_DELAY_MS);
+        }
+
+        function changeSlide(direction) {
+            const carouselSlide = document.getElementById('carouselSlide');
+            
+            // Disable auto-slide when manual navigation is used
+            if (autoSlideEnabled) {
+                autoSlideEnabled = false;
+                carouselSlide.classList.remove('auto-slide');
+            }
+
+            // Clear any existing timeout
+            if (slideTimeout) {
+                clearTimeout(slideTimeout);
+            }
+
+            // Update current slide index
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            
+            // Apply the transform
+            const offset = -currentSlide * 100;
+            carouselSlide.style.marginLeft = offset + '%';
+
+            // Re-enable auto-slide after 10 seconds of inactivity
+            slideTimeout = setTimeout(() => {
+                autoSlideEnabled = true;
+                carouselSlide.classList.add('auto-slide');
+                // Reset to sync with animation
+                currentSlide = 0;
+                carouselSlide.style.marginLeft = '0%';
+            }, 10000);
         }
     </script>
 
