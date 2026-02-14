@@ -171,7 +171,7 @@
 
     <div class="welcome-section">
         <h1>Hi Jenny! 💕</h1>
-        <button class="welcome-button" onclick="showContent()">Click Me</button>
+        <button class="welcome-button" onclick="showContent()" aria-label="Reveal special content">Click Me</button>
     </div>
 
     <div class="content-section" id="contentSection">
@@ -188,7 +188,7 @@
         <div class="video-section">
             <h2>Our Special Moments 💖</h2>
             <div class="video-container">
-                <video controls autoplay muted playsinline loop>
+                <video controls autoplay muted playsinline loop aria-label="Valentine's Day special moments video compilation">
                     <source src="valentine.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -201,10 +201,11 @@
             const contentSection = document.getElementById('contentSection');
             contentSection.classList.add('show');
             
-            // Scroll to content smoothly
+            // Small delay to allow animation to start before scrolling
+            const SCROLL_DELAY_MS = 100;
             setTimeout(() => {
                 contentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            }, SCROLL_DELAY_MS);
         }
     </script>
 
