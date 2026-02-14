@@ -266,9 +266,9 @@
             margin-bottom: 40px;
         }
 
-        .video-container video {
+        .video-container iframe {
             width: 100%;
-            height: auto;
+            height: 500px;
             border: none;
             border-radius: 10px;
         }
@@ -300,8 +300,8 @@
         }
 
         @media (max-width: 768px) {
-            .video-container video {
-                height: auto;
+            .video-container iframe {
+                height: 300px;
             }
 
             .bouquet-button {
@@ -315,8 +315,8 @@
                 padding: 10px;
             }
 
-            .video-container video {
-                height: auto;
+            .video-container iframe {
+                height: 250px;
             }
 
             .bouquet-button {
@@ -354,10 +354,7 @@
 
     <div class="video-section" id="videoSection">
         <div class="video-container">
-            <video controls autoplay muted preload="metadata">
-                <source src="vid.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            <iframe src="https://drive.google.com/file/d/149JAQa3lQWO6QyibQ2O_4FXaVhsvZftY/preview?autoplay=1" allow="autoplay"></iframe>
         </div>
     </div>
 
