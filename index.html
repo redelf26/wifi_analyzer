@@ -3,263 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You</title>
+    <title>Hello Jenny</title>
     <style>
-        /* General Page Setup */
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #fce4ec; /* Light pink background */
-            margin: 0;
-            overflow: hidden;
             font-family: 'Arial', sans-serif;
-        }
-
-        /* The Container */
-        .wrapper {
-            position: relative;
-            cursor: pointer;
-        }
-
-        /* The Envelope Base */
-        .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background-color: #ff5252;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* The Flaps */
-        .envelope:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 110px solid #ff1744; /* Darker red for inside/back flap */
-            width: 0;
-            height: 0;
-            z-index: 1; /* Behind the letter */
-        }
-
-        .flap-right {
-            position: absolute;
-            top: 0;
-            right: 0;
-            border-top: 100px solid transparent;
-            border-bottom: 100px solid transparent;
-            border-right: 150px solid #ff8a80;
-            width: 0;
-            height: 0;
-            z-index: 3;
-        }
-
-        .flap-left {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-top: 100px solid transparent;
-            border-bottom: 100px solid transparent;
-            border-left: 150px solid #ff8a80;
-            width: 0;
-            height: 0;
-            z-index: 3;
-        }
-
-        .flap-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 100px solid #ff5252;
-            width: 0;
-            height: 0;
-            border-radius: 0 0 10px 10px;
-            z-index: 3;
-        }
-
-        /* The Top Flap (The one that opens) */
-        .flap-top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 110px solid #ff5252;
-            width: 0;
-            height: 0;
-            z-index: 4;
-            transform-origin: top;
-            transition: transform 0.6s ease 0s, z-index 0.2s linear 0.3s;
-        }
-
-        /* The Heart Sticker */
-        .heart-seal {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #d32f2f;
-            font-size: 40px;
-            z-index: 5;
-            transition: opacity 0.4s;
-        }
-
-        /* The Letter/Card */
-        .letter {
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            width: 270px;
-            height: 180px;
-            background-color: white;
-            border-radius: 5px;
-            z-index: 2;
-            transition: transform 0.6s ease 0.6s, z-index 0.2s linear 0.6s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .letter h2 {
-            font-family: 'Brush Script MT', cursive;
-            color: #d32f2f;
-            font-size: 32px;
+            background-color: #f4f4f4;
             margin: 0;
-            padding: 10px;
-        }
-        
-        .letter p {
-            font-size: 14px;
-            color: #555;
-            margin-top: 5px;
-        }
-
-        /* Animation States */
-        .wrapper.open .flap-top {
-            transform: rotateX(180deg);
-            z-index: 1; /* Move behind letter after flip */
-        }
-
-        .wrapper.open .letter {
-            transform: translateY(-100px);
-            z-index: 4; /* Move on top of flaps */
-        }
-
-        .wrapper.open .heart-seal {
-            opacity: 0;
-        }
-
-        /* Click Me Hint */
-        .hint {
-            position: absolute;
-            bottom: -50px;
-            width: 100%;
+            padding: 0;
             text-align: center;
-            color: #880e4f;
-            font-size: 18px;
-            opacity: 0.8;
-            animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .welcome-section {
+            background-color: #fff;
+            padding: 50px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* Floating Hearts Background (Optional Decoration) */
-        .bg-heart {
-            position: absolute;
-            top: -10vh;
-            background: rgba(255, 192, 203, 0.6);
-            width: 20px;
-            height: 20px;
-            transform: rotate(45deg);
-            animation: fall linear infinite;
-        }
-        .bg-heart:before, .bg-heart:after {
-            content: "";
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: inherit;
-            border-radius: 50%;
-        }
-        .bg-heart:before { left: -10px; }
-        .bg-heart:after { top: -10px; }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(45deg); }
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 20px;
         }
 
+        .welcome-section p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .welcome-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .welcome-button:hover {
+            background-color: #0056b3;
+        }
+
+        .carousel-container {
+            width: 80%;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .carousel-slide {
+            display: flex;
+            width: 500%; /* 5 images * 100% */
+            animation: slide 15s infinite;
+        }
+
+        .carousel-slide img {
+            width: 20%; /* 100% / 5 images */
+            height: auto;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% { margin-left: 0; }
+            15% { margin-left: 0; }
+            20% { margin-left: -100%; }
+            35% { margin-left: -100%; }
+            40% { margin-left: -200%; }
+            55% { margin-left: -200%; }
+            60% { margin-left: -300%; }
+            75% { margin-left: -300%; }
+            80% { margin-left: -400%; }
+            95% { margin-left: -400%; }
+            100% { margin-left: 0; }
+        }
+
+        .video-section {
+            background-color: #e9ecef;
+            padding: 40px 20px;
+            border-top: 2px solid #dee2e6;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .video-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body>
 
-    <div id="hearts-container"></div>
-
-    <div class="wrapper" onclick="toggleEnvelope()">
-        <div class="envelope">
-            <div class="flap-left"></div>
-            <div class="flap-right"></div>
-            <div class="flap-bottom"></div>
-            
-            <div class="letter">
-<h2>Hi, Jenny.</h2>
-                <h2>Happy Valentine's<br>Babe</h2>
-                <p>❤️</p>
-            </div>
-            
-            <div class="flap-top">
-                <div class="heart-seal">♥</div>
-            </div>
-        </div>
-        <div class="hint">Click to Open</div>
+    <div class="welcome-section">
+        <h1>Hello, Jenny!</h1>
+        <p>Welcome to your page. To get started, please press the button below.</p>
+        <button class="welcome-button" onclick="alert('Welcome, Jenny!')">Press This Button</button>
     </div>
 
-    <script>
-        function toggleEnvelope() {
-            const wrapper = document.querySelector('.wrapper');
-            wrapper.classList.toggle('open');
-        }
+    <div class="carousel-container">
+        <div class="carousel-slide">
+            <img src="image_0.png" alt="Couple on the beach">
+            <img src="image_1.png" alt="Couple on a bridge">
+            <img src="image_2.png" alt="Couple selfie">
+            <img src="image_3.png" alt="Couple in a cave">
+            <img src="image_4.png" alt="Couple smiling">
+        </div>
+    </div>
 
-        // Create random background hearts
-        function createHearts() {
-            const container = document.getElementById('hearts-container');
-            const heartCount = 15;
-            
-            for(let i = 0; i < heartCount; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('bg-heart');
-                heart.style.left = Math.random() * 100 + "vw";
-                heart.style.animationDuration = Math.random() * 3 + 2 + "s";
-                heart.style.width = Math.random() * 10 + 10 + "px";
-                heart.style.height = heart.style.width;
-                
-                // Adjust pseudo elements size based on main size
-                const size = parseInt(heart.style.width);
-                const styleSheet = document.createElement("style");
-                styleSheet.innerText = `
-                    .bg-heart:nth-child(${i+1}):before { left: -${size/2}px; width: ${size}px; height: ${size}px; }
-                    .bg-heart:nth-child(${i+1}):after { top: -${size/2}px; width: ${size}px; height: ${size}px; }
-                `;
-                document.head.appendChild(styleSheet);
-                
-                container.appendChild(heart);
-            }
-        }
-        createHearts();
-    </script>
+    <div class="video-section">
+        <h2>Highlighted Video</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="image_17.png" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
 
 </body>
 </html>
