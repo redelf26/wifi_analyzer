@@ -3,232 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi Speed Analyzer</title>
-    
-    <!-- External Dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <title>For You</title>
+    <style>
+        /* General Page Setup */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec; /* Light pink background */
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* The Container */
+        .wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* The Envelope Base */
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #ff5252;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* The Flaps */
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ff1744; /* Darker red for inside/back flap */
+            width: 0;
+            height: 0;
+            z-index: 1; /* Behind the letter */
+        }
+
+        .flap-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            border-right: 150px solid #ff8a80;
+            width: 0;
+            height: 0;
+            z-index: 3;
+        }
+
+        .flap-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            border-left: 150px solid #ff8a80;
+            width: 0;
+            height: 0;
+            z-index: 3;
+        }
+
+        .flap-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 100px solid #ff5252;
+            width: 0;
+            height: 0;
+            border-radius: 0 0 10px 10px;
+            z-index: 3;
+        }
+
+        /* The Top Flap (The one that opens) */
+        .flap-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ff5252;
+            width: 0;
+            height: 0;
+            z-index: 4;
+            transform-origin: top;
+            transition: transform 0.6s ease 0s, z-index 0.2s linear 0.3s;
+        }
+
+        /* The Heart Sticker */
+        .heart-seal {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #d32f2f;
+            font-size: 40px;
+            z-index: 5;
+            transition: opacity 0.4s;
+        }
+
+        /* The Letter/Card */
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 270px;
+            height: 180px;
+            background-color: white;
+            border-radius: 5px;
+            z-index: 2;
+            transition: transform 0.6s ease 0.6s, z-index 0.2s linear 0.6s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .letter h2 {
+            font-family: 'Brush Script MT', cursive;
+            color: #d32f2f;
+            font-size: 32px;
+            margin: 0;
+            padding: 10px;
+        }
+        
+        .letter p {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Animation States */
+        .wrapper.open .flap-top {
+            transform: rotateX(180deg);
+            z-index: 1; /* Move behind letter after flip */
+        }
+
+        .wrapper.open .letter {
+            transform: translateY(-100px);
+            z-index: 4; /* Move on top of flaps */
+        }
+
+        .wrapper.open .heart-seal {
+            opacity: 0;
+        }
+
+        /* Click Me Hint */
+        .hint {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #880e4f;
+            font-size: 18px;
+            opacity: 0.8;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Floating Hearts Background (Optional Decoration) */
+        .bg-heart {
+            position: absolute;
+            top: -10vh;
+            background: rgba(255, 192, 203, 0.6);
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+            animation: fall linear infinite;
+        }
+        .bg-heart:before, .bg-heart:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: inherit;
+            border-radius: 50%;
+        }
+        .bg-heart:before { left: -10px; }
+        .bg-heart:after { top: -10px; }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(45deg); }
+        }
+
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <div class="gradient-bg text-white py-8">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold mb-2">WiFi Speed Analyzer</h1>
-                <p class="text-xl opacity-90">Professional Network Diagnostics & Speed Testing</p>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div class="wrapper" onclick="toggleEnvelope()">
+        <div class="envelope">
+            <div class="flap-left"></div>
+            <div class="flap-right"></div>
+            <div class="flap-bottom"></div>
+            
+            <div class="letter">
+                <h2>Happy Valentine's<br>Babe</h2>
+                <p>❤️</p>
+            </div>
+            
+            <div class="flap-top">
+                <div class="heart-seal">♥</div>
             </div>
         </div>
+        <div class="hint">Click to Open</div>
     </div>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Speed Test Panel -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl card-shadow p-8">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Speed Test</h2>
-                    
-                    <!-- Speed Gauges -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="text-center">
-                            <h3 class="text-lg font-medium mb-4 text-gray-700">Download Speed</h3>
-                            <div class="speed-gauge mx-auto mb-4">
-                                <div class="relative z-10 text-center">
-                                    <div id="downloadSpeed" class="text-3xl font-bold text-gray-800">0</div>
-                                    <div class="text-sm text-gray-500">Mbps</div>
-                                </div>
-                            </div>
-                            <div id="downloadStatus" class="text-sm text-gray-600">Ready to test</div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <h3 class="text-lg font-medium mb-4 text-gray-700">Upload Speed</h3>
-                            <div class="speed-gauge mx-auto mb-4">
-                                <div class="relative z-10 text-center">
-                                    <div id="uploadSpeed" class="text-3xl font-bold text-gray-800">0</div>
-                                    <div class="text-sm text-gray-500">Mbps</div>
-                                </div>
-                            </div>
-                            <div id="uploadStatus" class="text-sm text-gray-600">Ready to test</div>
-                        </div>
-                    </div>
+    <script>
+        function toggleEnvelope() {
+            const wrapper = document.querySelector('.wrapper');
+            wrapper.classList.toggle('open');
+        }
 
-                    <!-- Control Buttons -->
-                    <div class="text-center mb-8">
-                        <button id="startTest" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors duration-200 mr-4">
-                            Start Speed Test
-                        </button>
-                        <button id="stopTest" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors duration-200 opacity-50 cursor-not-allowed" disabled>
-                            Stop Test
-                        </button>
-                    </div>
+        // Create random background hearts
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 15;
+            
+            for(let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+                heart.style.width = Math.random() * 10 + 10 + "px";
+                heart.style.height = heart.style.width;
+                
+                // Adjust pseudo elements size based on main size
+                const size = parseInt(heart.style.width);
+                const styleSheet = document.createElement("style");
+                styleSheet.innerText = `
+                    .bg-heart:nth-child(${i+1}):before { left: -${size/2}px; width: ${size}px; height: ${size}px; }
+                    .bg-heart:nth-child(${i+1}):after { top: -${size/2}px; width: ${size}px; height: ${size}px; }
+                `;
+                document.head.appendChild(styleSheet);
+                
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+    </script>
 
-                    <!-- Progress Bar -->
-                    <div id="progressContainer" class="hidden mb-6">
-                        <div class="flex justify-between text-sm text-gray-600 mb-2">
-                            <span id="currentPhase">Preparing test...</span>
-                            <span id="progressPercent">0%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Real-time Chart -->
-                    <div class="mt-8">
-                        <canvas id="speedChart" width="400" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Network Information Panel -->
-            <div class="space-y-6">
-                <!-- Connection Info -->
-                <div class="bg-white rounded-2xl card-shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Network Information</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Public IP:</span>
-                            <span id="publicIP" class="font-mono text-sm">Loading...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Location:</span>
-                            <span id="location" class="text-sm">Loading...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">ISP:</span>
-                            <span id="isp" class="text-sm">Loading...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Local IP:</span>
-                            <span id="localIP" class="font-mono text-sm">Detecting...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Connection:</span>
-                            <span id="connectionType" class="text-sm">Unknown</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Network Name:</span>
-                            <span id="networkName" class="text-sm">Detecting...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2">
-                            <span class="text-gray-600">Latency:</span>
-                            <span id="latency" class="text-sm">-- ms</span>
-                        </div>
-                    </div>
-
-                    <button id="refreshInfo" class="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-                        Refresh Info
-                    </button>
-                </div>
-
-                <!-- WiFi Networks & Connection Quality -->
-                <div class="bg-white rounded-2xl card-shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Connection Quality</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Signal Strength:</span>
-                            <span id="signalStrength" class="text-sm">Detecting...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-gray-600">Connection Speed:</span>
-                            <span id="connectionSpeed" class="text-sm">Detecting...</span>
-                        </div>
-                        
-                        <div class="flex justify-between items-center py-2">
-                            <span class="text-gray-600">Network Quality:</span>
-                            <span id="networkQuality" class="text-sm">Analyzing...</span>
-                        </div>
-                    </div>
-
-                    <button id="scanNetworks" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-                        Scan Available Networks
-                    </button>
-                    
-                    <div id="availableNetworks" class="mt-4 hidden">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">Available Networks:</h3>
-                        <div id="networksList" class="space-y-2 max-h-32 overflow-y-auto">
-                            <!-- Networks will be populated here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DNS Information -->
-                <div class="bg-white rounded-2xl card-shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">DNS Information</h2>
-                    
-                    <div class="space-y-3">
-                        <div id="dnsServers" class="text-sm text-gray-600">
-                            Checking DNS servers...
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button id="dnsTest" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-                            Test DNS Speed
-                        </button>
-                        <div id="dnsResults" class="mt-3 text-sm text-gray-600 hidden"></div>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="bg-white rounded-2xl card-shadow p-6">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Quick Stats</h2>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center p-3 bg-blue-50 rounded-lg">
-                            <div id="avgDownload" class="text-lg font-semibold text-blue-600">--</div>
-                            <div class="text-xs text-gray-500">Avg Download</div>
-                        </div>
-                        
-                        <div class="text-center p-3 bg-green-50 rounded-lg">
-                            <div id="avgUpload" class="text-lg font-semibold text-green-600">--</div>
-                            <div class="text-xs text-gray-500">Avg Upload</div>
-                        </div>
-                        
-                        <div class="text-center p-3 bg-yellow-50 rounded-lg">
-                            <div id="maxDownload" class="text-lg font-semibold text-yellow-600">--</div>
-                            <div class="text-xs text-gray-500">Max Download</div>
-                        </div>
-                        
-                        <div class="text-center p-3 bg-purple-50 rounded-lg">
-                            <div id="testCount" class="text-lg font-semibold text-purple-600">0</div>
-                            <div class="text-xs text-gray-500">Tests Run</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error/Status Messages -->
-        <div id="statusMessage" class="fixed bottom-4 right-4 max-w-md hidden">
-            <div class="bg-white border-l-4 border-blue-500 rounded-lg shadow-lg p-4">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p id="statusText" class="text-sm text-gray-700"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom JavaScript -->
-    <script src="app.js"></script>
 </body>
 </html>
